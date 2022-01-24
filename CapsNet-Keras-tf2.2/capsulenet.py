@@ -159,8 +159,8 @@ def load_data():
     size_train_dataset = 9000
     size_test_dataset = 1500
     ##------Загружаем наш dataset
-    img_height = 64
-    img_width = 64
+    img_height = 28
+    img_width = 28
     train_dataset = tf.keras.utils.image_dataset_from_directory("NewNameRGB", validation_split=0,
                                                                 seed=13,
                                                                 image_size=(img_height, img_width),
@@ -193,15 +193,15 @@ def load_data():
     validation_dataset = validation_dataset.prefetch(buffer_size=AUTOTUNE)
     ##-------------------
 
-    for image_batch, labels_batch in train_dataset:
-        print(image_batch.shape)
-        print(labels_batch.shape)
-        break
+#    for image_batch, labels_batch in train_dataset:
+#        print(image_batch.shape)
+#        print(labels_batch.shape)
+#        break
 
-    for image_batch_test, labels_batch_test in test_dataset:
-        print(image_batch_test.shape)
-        print(labels_batch_test.shape)
-        break
+#    for image_batch_test, labels_batch_test in test_dataset:
+#        print(image_batch_test.shape)
+#        print(labels_batch_test.shape)
+#        break
 
     # -------------------
 
@@ -215,8 +215,8 @@ def load_data():
     # --------------------
     image_batch = np.array(image_batch)
     image_batch_test = np.array(image_batch_test)
-    image_batch = image_batch.reshape(-1, 64, 64, 3).astype('float32')
-    image_batch_test = image_batch_test.reshape(-1, 64, 64, 3).astype('float32')
+    image_batch = image_batch.reshape(-1, 28, 28, 3).astype('float32')
+    image_batch_test = image_batch_test.reshape(-1, 28, 28, 3).astype('float32')
 
     labels_batch = np.array(labels_batch)
     labels_batch_test = np.array(labels_batch_test)
