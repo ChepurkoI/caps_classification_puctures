@@ -28,10 +28,10 @@ def CapsNet(input_shape, n_class, routings, batch_size):
     conv1 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv1')(x)
 
     # Layer 2: Слой Conv2D с активацией `squash`, затем переформирование в [None, num_capsule, dim_capsule].
-    primarycaps = PrimaryCap(conv1, dim_capsule=8, n_channels=32, kernel_size=9, strides=2, padding='valid')
+    primarycaps = PrimaryCap(conv1, dim_capsule=16, n_channels=16, kernel_size=9, strides=2, padding='valid')
 
     # Layer 3: Капсульный слой. Здесь работает алгоритм маршрутизации.
-    digitcaps = CapsuleLayer(num_capsule=n_class, dim_capsule=16, routings=routings, name='digitcaps')(primarycaps)
+    digitcaps = CapsuleLayer(num_capsule=n_class, dim_capsule=32, routings=routings, name='digitcaps')(primarycaps)
 
     # Layer 4: Это вспомогательный слой для замены каждой капсулы ее длиной.
     # Просто чтобы соответствовать истинной форме метки.
@@ -44,7 +44,7 @@ def CapsNet(input_shape, n_class, routings, batch_size):
 
     # Общая модель декодера при обучении и прогнозировании
     decoder = models.Sequential(name='decoder')
-    decoder.add(layers.Dense(512, activation='relu', input_dim=16 * n_class))
+    decoder.add(layers.Dense(512, activation='relu', input_dim=32 * n_class))
     decoder.add(layers.Dense(1024, activation='relu'))
     decoder.add(layers.Dense(np.prod(input_shape), activation='sigmoid'))
     decoder.add(layers.Reshape(target_shape=input_shape, name='out_recon'))
@@ -55,7 +55,7 @@ def CapsNet(input_shape, n_class, routings, batch_size):
     eval_model = models.Model(x, [out_caps, decoder(masked)])
 
     # манипулирование моделью
-    noise = layers.Input(shape=(n_class, 16))
+    noise = layers.Input(shape=(n_class, 32))
     noised_digitcaps = layers.Add()([digitcaps, noise])
     masked_noised_y = Mask()([noised_digitcaps, y])
     manipulate_model = models.Model([x, y, noise], decoder(masked_noised_y))
@@ -284,7 +284,7 @@ if __name__ == "__main__":
                                                   routings=args.routings,
                                                   batch_size=args.batch_size)
     model.summary()
-
+    """
     # обучение или тестирование
     if args.weights is not None:  # инициировать веса модели с предоставленными весами
         model.load_weights(args.weights)
@@ -294,5 +294,5 @@ if __name__ == "__main__":
         if args.weights is None:
             print('No weights are provided. Will test using random initialized weights.')
         test(model=eval_model, data=(x_test, y_test), args=args)
-
+"""
 
