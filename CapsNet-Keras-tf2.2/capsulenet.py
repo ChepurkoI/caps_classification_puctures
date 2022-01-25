@@ -248,7 +248,7 @@ if __name__ == "__main__":
 
     # установка гиперпараметров
     parser = argparse.ArgumentParser(description="Capsule Network.")
-    parser.add_argument('--epochs', default=10, type=int)
+    parser.add_argument('--epochs', default=30, type=int)
     parser.add_argument('--batch_size', default=32, type=int)
     parser.add_argument('--learning_rate', default=0.001, type=float,
                         help="Initial learning rate")
